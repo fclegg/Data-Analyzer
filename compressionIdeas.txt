@@ -1,3 +1,22 @@
+mvp:
+Show any dataset over time : line graph
+select dataset menu
+import data
+
+
+
+logging stuff:
+
+Q how do we shrink log file?
+ideas:
+-Shorten names of datapoints (create key?)
+-Show each datapoint per timestamp instead of timestamp for each datapoint (how specific do timestamps need to be?)
+-Compress subsequent readings of same value into one reading with multiple timestamps
+-
+
+-Maybe dont write a text file
+
+
 {Speed, 100, 20.25}
 {Speed, 100, 21.25}
 {Speed, 100, 22.25}
