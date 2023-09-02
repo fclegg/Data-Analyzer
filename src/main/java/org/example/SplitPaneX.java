@@ -47,6 +47,7 @@ public class SplitPaneX extends JPanel implements ListSelectionListener {
         //Create and set up the window.
         JFrame frame = new JFrame("SplitPaneDemo");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
         SplitPaneX splitPane = new SplitPaneX();
         frame.getContentPane().add(splitPane.getSplitPane());
 

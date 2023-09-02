@@ -6,11 +6,6 @@ import javax.swing.*;
 // then press Enter. You can now see whitespace characters in your code.
 public class Main extends JFrame {
     public static void main(String[] args) {
-        /*
-        EventQueue.invokeLater(() -> {
-            var ex = new SplitPane();
-            ex.setVisible(true);
-        }); */
 
         javax.swing.SwingUtilities.invokeLater(new Runnable() {
             SplitPaneX window = new SplitPaneX();
