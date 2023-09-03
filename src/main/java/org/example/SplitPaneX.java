@@ -1,45 +1,70 @@
 package org.example;
 
+import javax.sound.sampled.Line;
 import javax.swing.*;
 import javax.swing.event.*;
+import javax.swing.filechooser.FileFilter;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.io.File;
 
-public class SplitPaneX extends JPanel implements ListSelectionListener {
+public class SplitPaneX /*extends JFrame*/ implements ListSelectionListener, ActionListener {
     private JList list;
-    private JLabel picture;
     private JSplitPane splitPane;
+    private Container pane = new Container();
+    private LineChartEx graph = new LineChartEx();
+    private File logFile;
 
     private String[] datasets = {"Dataset 1", "Dataset 2", "Dataset 3", "Dataset 4"};
+    private double[] dataset1X = {0, 5, 10, 15, 20, 25, 30, 35};
+    private double[] dataset1Y = {203,462,285,357,441,451,542,500};
 
     public SplitPaneX() {
-        list = new JList(datasets);
+        list = new JList();
         list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         list.setSelectedIndex(0);
         list.addListSelectionListener(this);
 
         JScrollPane listScrollPane = new JScrollPane(list);
-        picture = new JLabel();
+        JButton button = new JButton("Import File");
+        button.setBackground(Color.WHITE);
+        button.addActionListener(this);
 
-        JPanel graph = new LineChartEx();
+        LayoutManager layout = new BorderLayout();
+        pane.setLayout(layout);
 
-        splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, listScrollPane, graph);
+        pane.add(listScrollPane, BorderLayout.CENTER);
+        pane.add(button, BorderLayout.PAGE_START);
 
-        Dimension listMinimumSize = new Dimension(200, 50);
+        splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, pane, graph);
+
+        Dimension listMinimumSize = new Dimension(160, 50);
+        Dimension listPreferredSize = new Dimension(200, 50);
         Dimension graphMinimumSize = new Dimension(500, 50);
         listScrollPane.setMinimumSize(listMinimumSize);
-        picture.setMinimumSize(graphMinimumSize);
+        listScrollPane.setPreferredSize(listPreferredSize);
+        graph.setMinimumSize(graphMinimumSize);
 
 
         splitPane.setPreferredSize(new Dimension(800, 500));
+
+
+        javax.swing.SwingUtilities.invokeLater(new Runnable() {
+            public void run() {
+                createAndShowGUI();
+            }
+        });
     }
 
     public void valueChanged(ListSelectionEvent e) {
         JList list = (JList)e.getSource();
         list.getSelectedIndex();
+        updateGraph();
     }
 
     private void updateGraph(){
-
+        graph.newChart(dataset1X, dataset1Y, "time", "stuff");
     }
 
     public /*static*/ void createAndShowGUI() {
@@ -48,16 +73,38 @@ public class SplitPaneX extends JPanel implements ListSelectionListener {
         JFrame frame = new JFrame("SplitPaneDemo");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-        SplitPaneX splitPane = new SplitPaneX();
-        frame.getContentPane().add(splitPane.getSplitPane());
+        frame.getContentPane().add(splitPane);
 
         //Display the window.
         frame.pack();
         frame.setVisible(true);
     }
 
-    public JSplitPane getSplitPane() {
-        return splitPane;
+    public void actionPerformed(ActionEvent e) {
+        JFileChooser fc = new JFileChooser();
+
+        FileFilter txtFilefilter = new FileFilter()
+        {
+            public boolean accept(File file) {
+                if (file.getName().endsWith(".txt")) {
+                    return true;
+                }
+                return false;
+            }
+            public String getDescription(){
+                return ".txt";
+            }
+        };
+
+        fc.setFileFilter(txtFilefilter);
+        int returnVal = fc.showOpenDialog(list);
+
+        logFile = fc.getSelectedFile();
+        populateList();
+    }
+
+    public void populateList() {
+
     }
 
     /*

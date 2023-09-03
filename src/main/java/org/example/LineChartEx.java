@@ -17,68 +17,42 @@ import java.awt.*;
 // Press Shift twice to open the Search Everywhere dialog and type `show whitespaces`,
 // then press Enter. You can now see whitespace characters in your code.
 public class LineChartEx extends JPanel {
+    ChartPanel chartPanel;
+
     public LineChartEx () {
         initUI();
     }
 
     private void initUI(){
 
-        XYDataset dataset = createDataset();
-        JFreeChart chart = createChart(dataset);
+        JFreeChart chart = createChart(new XYSeriesCollection(), "X Axis", "Y Axis");
 
-        ChartPanel chartPanel = new ChartPanel(chart, 516, 384, 516/4, 384/4, 516*2, 384*2, true, true, true, true, true, true);
+        chartPanel = new ChartPanel(chart, 516, 384, 516/4, 384/4, 516*2, 384*2, true, true, true, true, true, true);
         chartPanel.setBorder(BorderFactory.createEmptyBorder(15, 15, 15, 15));
         //chartPanel.setBackground(Color.BLACK);
         add(chartPanel);
-
-        //public ChartPanel(JFreeChart chart, int width, int height, int minimumDrawWidth, int minimumDrawHeight, int maximumDrawWidth, int maximumDrawHeight, boolean useBuffer, boolean properties, boolean save, boolean print, boolean zoom, boolean tooltips) {
-        //    this(chart, width, height, minimumDrawWidth, minimumDrawHeight, maximumDrawWidth, maximumDrawHeight, useBuffer, properties, true, save, print, zoom, tooltips);
-
-        //pack();
-        //("Line Chart");
-        //setLocationRelativeTo(null);
-        //setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     }
 
-    private XYDataset createDataset(){
-        var series1 = new XYSeries("Dataset1");
-        series1.add(18, 567);
-        series1.add(20, 612);
-        series1.add(25, 800);
-        series1.add(30, 980);
-        series1.add(40, 1410);
-        series1.add(50, 2350);
-
-        var series2 = new XYSeries("Dataset2");
-        series2.add(18, 530);
-        series2.add(20, 580);
-        series2.add(25, 740);
-        series2.add(30, 901);
-        series2.add(40, 1300);
-        series2.add(50, 2219);
-
-        var series3 = new XYSeries("Dataset3");
-        series3.add(18, 530);
-        series3.add(20, 530);
-        series3.add(25, 530);
-        series3.add(30, 530);
-        series3.add(40, 530);
-        series3.add(50, 530);
+    public void newChart(double[] xDatapoints, double [] yDatapoints, String xAxisLabel, String yAxisLabel) {
+        var series = new XYSeries("Dataset1");
+        //Populate XYseries with points
+        for (int i = 0; i < xDatapoints.length; i++) {
+            series.add(xDatapoints[i], yDatapoints[i]);
+        }
 
         var dataset = new XYSeriesCollection();
-        dataset.addSeries(series1);
-        dataset.addSeries(series2);
-        //dataset.addSeries(series3);
+        dataset.addSeries(series);
 
-        return dataset;
+        chartPanel.setChart(createChart(dataset, xAxisLabel, yAxisLabel));
     }
 
-    private JFreeChart createChart(XYDataset dataset) {
+
+    private JFreeChart createChart(XYDataset dataset, String xAxisLabel, String yAxisLabel) {
 
         JFreeChart chart = ChartFactory.createXYLineChart(
-                "Y axis per X axis",
-                "X axis",
-                "Y axis",
+                yAxisLabel + " vs " + xAxisLabel,
+                xAxisLabel,
+                yAxisLabel,
                 dataset,
                 PlotOrientation.VERTICAL,
                 true,
@@ -101,10 +75,10 @@ public class LineChartEx extends JPanel {
 
         chart.getLegend().setFrame(BlockBorder.NONE);
 
-        chart.setTitle(new TextTitle("Y per X",
+        /*chart.setTitle(new TextTitle("Y per X",
                 new Font("Serif", java.awt.Font.BOLD, 18)
             )
-        );
+        );*/
 
         return chart;
     }
