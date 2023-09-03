@@ -1,5 +1,8 @@
 package org.example;
 
+import org.jfree.data.xy.XYDataItem;
+import org.jfree.data.xy.XYSeries;
+
 import javax.sound.sampled.Line;
 import javax.swing.*;
 import javax.swing.event.*;
@@ -8,6 +11,10 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.*;
 
 public class SplitPaneX /*extends JFrame*/ implements ListSelectionListener, ActionListener {
     private JList list;
@@ -59,12 +66,11 @@ public class SplitPaneX /*extends JFrame*/ implements ListSelectionListener, Act
 
     public void valueChanged(ListSelectionEvent e) {
         JList list = (JList)e.getSource();
-        list.getSelectedIndex();
-        updateGraph();
+        //updateGraph(list.getSelectedIndex(), );
     }
 
-    private void updateGraph(){
-        graph.newChart(dataset1X, dataset1Y, "time", "stuff");
+    private void updateGraph(int listIndex, double[] xValues, double[] yValues, String yAxisLabel){
+        graph.newChart(xValues, yValues, "Time", yAxisLabel);
     }
 
     public /*static*/ void createAndShowGUI() {
@@ -86,7 +92,7 @@ public class SplitPaneX /*extends JFrame*/ implements ListSelectionListener, Act
         FileFilter txtFilefilter = new FileFilter()
         {
             public boolean accept(File file) {
-                if (file.getName().endsWith(".txt")) {
+                if (file.getName().endsWith(".txt") || Files.isDirectory(Path.of(file.getPath()))) {
                     return true;
                 }
                 return false;
@@ -100,11 +106,29 @@ public class SplitPaneX /*extends JFrame*/ implements ListSelectionListener, Act
         int returnVal = fc.showOpenDialog(list);
 
         logFile = fc.getSelectedFile();
-        populateList();
+            populateList();
     }
 
     public void populateList() {
+        try {
+            Scanner scanner = new Scanner(logFile);
+            String log = scanner.next();
+            String[] dataPoints = log.split(";");
 
+            HashMap<String, XYSeries> categories = new HashMap<String, XYSeries>();
+
+
+            for (int i = 0; i < dataPoints.length; i++) {
+                String[] items = dataPoints[i].split(",");
+                categories.put(items[0], null);
+            }
+
+            list.setListData(categories.keySet().toArray());
+
+        } catch(FileNotFoundException e) {
+            System.out.println("File not found bitch");
+            e.printStackTrace();
+        }
     }
 
     /*
