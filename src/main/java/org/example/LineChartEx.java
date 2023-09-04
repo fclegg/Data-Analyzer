@@ -33,13 +33,7 @@ public class LineChartEx extends JPanel {
         add(chartPanel);
     }
 
-    public void newChart(double[] xDatapoints, double [] yDatapoints, String xAxisLabel, String yAxisLabel) {
-        var series = new XYSeries("Dataset1");
-        //Populate XYseries with points
-        for (int i = 0; i < xDatapoints.length; i++) {
-            series.add(xDatapoints[i], yDatapoints[i]);
-        }
-
+    public void newChart(XYSeries series, String xAxisLabel, String yAxisLabel) {
         var dataset = new XYSeriesCollection();
         dataset.addSeries(series);
 

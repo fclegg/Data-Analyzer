@@ -22,6 +22,7 @@ public class SplitPaneX /*extends JFrame*/ implements ListSelectionListener, Act
     private Container pane = new Container();
     private LineChartEx graph = new LineChartEx();
     private File logFile;
+    private HashMap<String, XYSeries> categories;
 
     private String[] datasets = {"Dataset 1", "Dataset 2", "Dataset 3", "Dataset 4"};
     private double[] dataset1X = {0, 5, 10, 15, 20, 25, 30, 35};
@@ -66,11 +67,18 @@ public class SplitPaneX /*extends JFrame*/ implements ListSelectionListener, Act
 
     public void valueChanged(ListSelectionEvent e) {
         JList list = (JList)e.getSource();
-        //updateGraph(list.getSelectedIndex(), );
+        String elementTitle = list.getModel().getElementAt(list.getSelectedIndex()).toString();
+
+        updateGraph(list, elementTitle);
+
+        System.out.println("value changed");
+
     }
 
-    private void updateGraph(int listIndex, double[] xValues, double[] yValues, String yAxisLabel){
-        graph.newChart(xValues, yValues, "Time", yAxisLabel);
+    private void updateGraph(JList list, String elementTitle){
+
+        XYSeries series = categories.get(elementTitle);
+        graph.newChart(series, "Time", elementTitle);
     }
 
     public /*static*/ void createAndShowGUI() {
@@ -115,12 +123,15 @@ public class SplitPaneX /*extends JFrame*/ implements ListSelectionListener, Act
             String log = scanner.next();
             String[] dataPoints = log.split(";");
 
-            HashMap<String, XYSeries> categories = new HashMap<String, XYSeries>();
-
+            categories = new HashMap<String, XYSeries>();
 
             for (int i = 0; i < dataPoints.length; i++) {
                 String[] items = dataPoints[i].split(",");
-                categories.put(items[0], null);
+                if (categories.get(items[0]) != null) {
+                    categories.get(items[0]).add(Double.parseDouble(items[2]), Double.parseDouble(items[1]));
+                } else {
+                    categories.put(items[0], new XYSeries(items[0]));
+                }
             }
 
             list.setListData(categories.keySet().toArray());
@@ -130,17 +141,4 @@ public class SplitPaneX /*extends JFrame*/ implements ListSelectionListener, Act
             e.printStackTrace();
         }
     }
-
-    /*
-    public static void main(String[] args) {
-        //Schedule a job for the event-dispatching thread:
-        //creating and showing this application's GUI.
-        javax.swing.SwingUtilities.invokeLater(new Runnable() {
-            public void run() {
-                createAndShowGUI();
-            }
-        });
-    }
-    */
-
 }
