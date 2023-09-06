@@ -7,6 +7,7 @@ import java.awt.*;
 // then press Enter. You can now see whitespace characters in your code.
 public class Main {
     public static void main(String[] args) {
+        //email finneganclegg@gmail.com for info about this analyzer :D
             SplitPaneX window = new SplitPaneX();
     }
 }

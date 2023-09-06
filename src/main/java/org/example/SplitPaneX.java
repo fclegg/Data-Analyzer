@@ -84,7 +84,7 @@ public class SplitPaneX /*extends JFrame*/ implements ListSelectionListener, Act
     public /*static*/ void createAndShowGUI() {
 
         //Create and set up the window.
-        JFrame frame = new JFrame("SplitPaneDemo");
+        JFrame frame = new JFrame("Log Analyzer");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         frame.getContentPane().add(splitPane);
@@ -121,6 +121,40 @@ public class SplitPaneX /*extends JFrame*/ implements ListSelectionListener, Act
         try {
             Scanner scanner = new Scanner(logFile);
             String log = scanner.next();
+            String[] loggedFields = log.substring(0, log.indexOf("0.000")+1).split("\t");
+
+            categories = new HashMap<String, XYSeries>();
+
+            String[] rows = log.substring(log.indexOf("0.000"), log.length()+1).split("\n");
+            for (int i = 0; i < rows.length; i++) {
+                String[] dataPoints = rows[i].split("\t");
+                double timeStamp = Double.parseDouble(dataPoints[0]);
+                for (int j = 0; j < dataPoints.length; j++) {
+                    try {
+                        if (categories.get(loggedFields[j]) != null) {
+                            categories.get(loggedFields[j]).add(timeStamp, Double.parseDouble(dataPoints[j]));
+                        } else {
+                            categories.put(loggedFields[j], new XYSeries(loggedFields[j]));
+                        }
+                    } catch (Exception e) {
+                        if (categories.get(loggedFields[j]) != null) {
+                            categories.get(loggedFields[j]).add(timeStamp, 0.0);
+                        } else {
+                            categories.put(loggedFields[j], new XYSeries(loggedFields[j]));
+                        }
+                    }
+                }
+            }
+            list.setListData(categories.keySet().toArray());
+
+        } catch(FileNotFoundException e) {
+            System.out.println("File not found bitch");
+            e.printStackTrace();
+        }
+        /* SCANNING FOR EXAMPLE LOG FILES
+        try {
+            Scanner scanner = new Scanner(logFile);
+            String log = scanner.next();
             String[] dataPoints = log.split(";");
 
             categories = new HashMap<String, XYSeries>();
@@ -133,12 +167,12 @@ public class SplitPaneX /*extends JFrame*/ implements ListSelectionListener, Act
                     categories.put(items[0], new XYSeries(items[0]));
                 }
             }
-
             list.setListData(categories.keySet().toArray());
 
         } catch(FileNotFoundException e) {
             System.out.println("File not found bitch");
             e.printStackTrace();
         }
+         */
     }
 }
