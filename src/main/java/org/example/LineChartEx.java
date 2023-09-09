@@ -59,6 +59,7 @@ public class LineChartEx extends JPanel {
 
         plot.setRenderer(renderer);
         plot.setBackgroundPaint(Color.white);
+        renderer.setSeriesShapesVisible(0, false);
 
         plot.setRangeGridlinesVisible(true);
         plot.setRangeGridlinePaint(Color.BLACK);

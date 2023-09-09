@@ -12,9 +12,12 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.*;
+import java.util.List;
 
 public class SplitPaneX /*extends JFrame*/ implements ListSelectionListener, ActionListener {
     private JList list;
@@ -23,10 +26,6 @@ public class SplitPaneX /*extends JFrame*/ implements ListSelectionListener, Act
     private LineChartEx graph = new LineChartEx();
     private File logFile;
     private HashMap<String, XYSeries> categories;
-
-    private String[] datasets = {"Dataset 1", "Dataset 2", "Dataset 3", "Dataset 4"};
-    private double[] dataset1X = {0, 5, 10, 15, 20, 25, 30, 35};
-    private double[] dataset1Y = {203,462,285,357,441,451,542,500};
 
     public SplitPaneX() {
         list = new JList();
@@ -70,8 +69,6 @@ public class SplitPaneX /*extends JFrame*/ implements ListSelectionListener, Act
         String elementTitle = list.getModel().getElementAt(list.getSelectedIndex()).toString();
 
         updateGraph(list, elementTitle);
-
-        System.out.println("value changed");
 
     }
 
@@ -119,15 +116,15 @@ public class SplitPaneX /*extends JFrame*/ implements ListSelectionListener, Act
 
     public void populateList() {
         try {
-            Scanner scanner = new Scanner(logFile);
-            String log = scanner.next();
-            String[] loggedFields = log.substring(0, log.indexOf("0.000")+1).split("\t");
+            //Scanner scanner = new Scanner(logFile);
+            //String log = scanner.next();
+            List<String> log = Files.readAllLines(logFile.toPath(), StandardCharsets.US_ASCII);
 
+            String[] loggedFields = log.get(0).split("\t");
             categories = new HashMap<String, XYSeries>();
 
-            String[] rows = log.substring(log.indexOf("0.000"), log.length()+1).split("\n");
-            for (int i = 0; i < rows.length; i++) {
-                String[] dataPoints = rows[i].split("\t");
+            for (int i = 1; i < log.size(); i++) {
+                String[] dataPoints = log.get(i).split("\t");
                 double timeStamp = Double.parseDouble(dataPoints[0]);
                 for (int j = 0; j < dataPoints.length; j++) {
                     try {
@@ -150,6 +147,8 @@ public class SplitPaneX /*extends JFrame*/ implements ListSelectionListener, Act
         } catch(FileNotFoundException e) {
             System.out.println("File not found bitch");
             e.printStackTrace();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
         /* SCANNING FOR EXAMPLE LOG FILES
         try {
