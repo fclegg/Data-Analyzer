@@ -3,7 +3,6 @@ package org.example;
 import org.jfree.data.xy.XYSeries;
 
 import javax.swing.*;
-import javax.swing.border.Border;
 import javax.swing.event.*;
 import javax.swing.filechooser.FileFilter;
 import java.awt.*;
@@ -71,11 +70,11 @@ public class SplitPane /*extends JFrame*/ implements ListSelectionListener, Acti
         JList list = (JList)e.getSource();
         String elementTitle = list.getModel().getElementAt(list.getSelectedIndex()).toString();
 
-        updateGraph(list, elementTitle);
+        updateGraph(elementTitle);
 
     }
 
-    private void updateGraph(JList list, String elementTitle){
+    private void updateGraph(String elementTitle){
 
         XYSeries series = categories.get(elementTitle);
         graph.newChart(series, "Time", elementTitle);
@@ -100,10 +99,7 @@ public class SplitPane /*extends JFrame*/ implements ListSelectionListener, Acti
         FileFilter txtFilefilter = new FileFilter()
         {
             public boolean accept(File file) {
-                if (file.getName().endsWith(".txt") || Files.isDirectory(Path.of(file.getPath()))) {
-                    return true;
-                }
-                return false;
+                return file.getName().endsWith(".txt") || Files.isDirectory(Path.of(file.getPath()));
             }
             public String getDescription(){
                 return ".txt";
