@@ -1,10 +1,9 @@
 package org.example;
 
-import org.jfree.data.xy.XYDataItem;
 import org.jfree.data.xy.XYSeries;
 
-import javax.sound.sampled.Line;
 import javax.swing.*;
+import javax.swing.border.Border;
 import javax.swing.event.*;
 import javax.swing.filechooser.FileFilter;
 import java.awt.*;
@@ -19,7 +18,7 @@ import java.nio.file.Path;
 import java.util.*;
 import java.util.List;
 
-public class SplitPaneX /*extends JFrame*/ implements ListSelectionListener, ActionListener {
+public class SplitPane /*extends JFrame*/ implements ListSelectionListener, ActionListener {
     private JList list;
     private JSplitPane splitPane;
     private Container pane = new Container();
@@ -27,7 +26,7 @@ public class SplitPaneX /*extends JFrame*/ implements ListSelectionListener, Act
     private File logFile;
     private HashMap<String, XYSeries> categories;
 
-    public SplitPaneX() {
+    public SplitPane() {
         list = new JList();
         list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         list.setSelectedIndex(0);
@@ -38,8 +37,12 @@ public class SplitPaneX /*extends JFrame*/ implements ListSelectionListener, Act
         button.setBackground(Color.WHITE);
         button.addActionListener(this);
 
-        LayoutManager layout = new BorderLayout();
-        pane.setLayout(layout);
+        LayoutManager borderLayout = new BorderLayout();
+        pane.setLayout(borderLayout);
+
+        LayoutManager gridLayout = new GridLayout();
+        graph.setLayout(gridLayout);
+
 
         pane.add(listScrollPane, BorderLayout.CENTER);
         pane.add(button, BorderLayout.PAGE_START);

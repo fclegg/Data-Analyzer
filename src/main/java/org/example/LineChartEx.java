@@ -27,8 +27,8 @@ public class LineChartEx extends JPanel {
 
         JFreeChart chart = createChart(new XYSeriesCollection(), "X Axis", "Y Axis");
 
-        chartPanel = new ChartPanel(chart, 516, 384, 516, 384, 516, 384, true, true, true, true, true, true);
-        chartPanel.setBorder(BorderFactory.createEmptyBorder(15, 15, 15, 15));
+        chartPanel = new ChartPanel(chart, 516, 384, 516, 384, 516*4, 384*4, true, true, true, true, true, true);
+        chartPanel.setBorder(BorderFactory.createEmptyBorder(25, 15, 25, 15));
         add(chartPanel);
     }
 
